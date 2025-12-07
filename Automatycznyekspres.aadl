@@ -1,0 +1,286 @@
+package ekspres_kompakt_analiza_wagi
+public
+  with Base_Types;
+  with Data_Model;
+  with SEI;
+  
+  -- ==== DANE (DATA) ====
+  data KonfiguracjaNapoju    -- Zmieniono z: TypKawy
+    properties
+      Data_Model::Data_Representation => Enum;
+  end KonfiguracjaNapoju;
+
+  data MieszankaPlynow    -- Zmieniono z: Napoj
+    properties
+      Data_Model::Data_Representation => Struct;
+  end MieszankaPlynow;
+  
+  data LicznikSurowca    -- Zmieniono z: IloscKawy
+    properties
+      Data_Model::Data_Representation => Integer;
+  end LicznikSurowca;
+
+  -- ==== URZADZENIA (DEVICES) ====
+  device SensorIlosci
+    features
+      wartosc_pomiaru: out data port Base_Types::Integer;  -- Zmieniono z: ilosc_wy
+      dostep_do_magistrali: requires bus access MagistralaDanych;
+    properties
+      SEI::GrossWeight => 0.04 kg;
+      SEI::WeightLimit => 0.06 kg;
+  end SensorIlosci;
+  
+  device SensorTemperatury
+    features
+      odczyt_termiczny: out data port Base_Types::Integer;  -- Zmieniono z: temp_wy
+      dostep_do_magistrali: requires bus access MagistralaDanych;
+    properties
+      SEI::GrossWeight => 0.02 kg;
+      SEI::WeightLimit => 0.04 kg;
+  end SensorTemperatury;
+  
+  device PompaWody
+    features
+      sygnal_pracy_w: in data port Base_Types::Boolean;  -- Zmieniono z: komenda_woda
+    properties
+      SEI::GrossWeight => 0.9 kg;
+      SEI::WeightLimit => 1.2 kg;
+  end PompaWody;
+  
+  device PompaMleka
+    features
+      sygnal_pracy_m: in data port Base_Types::Boolean;  -- Zmieniono z: komenda_mleko
+    properties
+      SEI::GrossWeight => 0.6 kg;
+      SEI::WeightLimit => 0.8 kg;
+  end PompaMleka;
+
+  device DozownikKawy
+    features
+      sygnal_pracy_k: in data port Base_Types::Boolean;  -- Zmieniono z: komenda_kawa
+    properties
+      SEI::GrossWeight => 0.25 kg;
+      SEI::WeightLimit => 0.4 kg;
+  end DozownikKawy;
+
+  device MlynekKawy
+    features
+      sygnal_pracy_miel: in data port Base_Types::Boolean;  -- Zmieniono z: komenda_mielenie
+    properties
+      SEI::GrossWeight => 1.5 kg;
+      SEI::WeightLimit => 2.1 kg;
+  end MlynekKawy;
+
+  device SpieniaczMleka
+    features
+      sygnal_pracy_spien: in data port Base_Types::Boolean;  -- Zmieniono z: komenda_spienianie
+    properties
+      SEI::GrossWeight => 0.35 kg;
+      SEI::WeightLimit => 0.6 kg;
+  end SpieniaczMleka;
+
+  device GrzalkaWody
+    features
+      sygnal_pracy_grz: in data port Base_Types::Boolean;  -- Zmieniono z: komenda_grzanie
+    properties
+      SEI::GrossWeight => 2.6 kg;
+      SEI::WeightLimit => 3.2 kg;
+  end GrzalkaWody;
+  
+  device WyswietlaczLCD
+    features
+      interfejs_wej: in data port Base_Types::String;  -- Zmieniono z: wyswietl_wej
+      napoj_gotowy: out data port MieszankaPlynow;  -- Zmieniono z: napoj_wy, Typ Napoju
+      dostep_do_magistrali: requires bus access MagistralaDanych;
+    properties
+      SEI::GrossWeight => 0.12 kg;
+      SEI::WeightLimit => 0.18 kg;
+  end WyswietlaczLCD;
+
+  device ZbiornikWody
+    properties
+      SEI::GrossWeight => 0.4 kg;
+      SEI::WeightLimit => 2.5 kg;
+  end ZbiornikWody;
+  
+  device ZbiornikMleka
+    properties
+      SEI::GrossWeight => 0.3 kg;
+      SEI::WeightLimit => 1.2 kg;
+  end ZbiornikMleka;
+  
+  device Obudowa
+    properties
+      SEI::GrossWeight => 2.7 kg;
+  end Obudowa;
+
+  -- ==== WATKI (THREADS) ====
+  
+  thread LogikaSkladnikow    -- Zmieniono z: KontrolaSkladnikow
+    features
+      odczyty_sensorow: in data port Base_Types::Integer;  -- Zmieniono z: dane_sensorow_wej
+      parametry_wejscie: in data port MieszankaPlynow;     -- Zmieniono z: parametry_napoju_wej, Typ Napoju
+      
+      wyj_pompa_w: out data port Base_Types::Boolean;  -- Zmieniono z: pompa_wody_wy
+      wyj_pompa_m: out data port Base_Types::Boolean;  -- Zmieniono z: pompa_mleka_wy
+      wyj_grzalka_w: out data port Base_Types::Boolean;  -- Zmieniono z: grzalka_wody_wy
+      wyj_mlynek_k: out data port Base_Types::Boolean;  -- Zmieniono z: mlynek_kawy_wy
+      wyj_spieniacz_m: out data port Base_Types::Boolean;  -- Zmieniono z: spieniacz_mleka_wy
+      wyj_dozownik_k: out data port Base_Types::Boolean;  -- Zmieniono z: dozownik_kawy_wy
+  end LogikaSkladnikow;
+  
+  thread implementation LogikaSkladnikow.impl
+  end LogikaSkladnikow.impl;
+
+  thread PrzekaznikDanych
+    features
+      wejscie: in data port Base_Types::Integer;
+      wyjscie: out data port Base_Types::Integer;
+  end PrzekaznikDanych;
+
+  thread implementation PrzekaznikDanych.impl
+  end PrzekaznikDanych.impl;
+
+  -- ==== PROCESY (PROCESSES) ====
+  
+  process GlownyProcesZaparzania    -- Zmieniono z: ProcesParzenia
+    features
+      dane_pomiarowe_in: in data port Base_Types::Integer;  -- Zmieniono z: dane_sensorow_wej
+      ustawienia_in: in data port MieszankaPlynow;         -- Zmieniono z: parametry_napoju_wej
+      
+      cmd_pompa_w: out data port Base_Types::Boolean;  -- Zmieniono z: pompa_wody_wy
+      cmd_pompa_m: out data port Base_Types::Boolean;  -- Zmieniono z: pompa_mleka_wy
+      cmd_grzalka_w: out data port Base_Types::Boolean;  -- Zmieniono z: grzalka_wody_wy
+      cmd_mlynek_k: out data port Base_Types::Boolean;  -- Zmieniono z: mlynek_kawy_wy
+      cmd_spieniacz_m: out data port Base_Types::Boolean;  -- Zmieniono z: spieniacz_mleka_wy
+      cmd_dozownik_k: out data port Base_Types::Boolean;  -- Zmieniono z: dozownik_kawy_wy
+  end GlownyProcesZaparzania;
+  
+  process implementation GlownyProcesZaparzania.impl
+    subcomponents
+      logika_skladnikow: thread LogikaSkladnikow.impl;  -- Zmieniono nazwę subkomponentu
+    connections
+      wej_sens_log: port dane_pomiarowe_in -> logika_skladnikow.odczyty_sensorow;  -- Zmieniono porty
+      wej_ust_log: port ustawienia_in -> logika_skladnikow.parametry_wejscie;  -- Zmieniono porty
+      
+      wyj_woda: port logika_skladnikow.wyj_pompa_w -> cmd_pompa_w;
+      wyj_mleko: port logika_skladnikow.wyj_pompa_m -> cmd_pompa_m;
+      wyj_grzalka: port logika_skladnikow.wyj_grzalka_w -> cmd_grzalka_w;
+      wyj_mlynek: port logika_skladnikow.wyj_mlynek_k -> cmd_mlynek_k;
+      wyj_spieniacz: port logika_skladnikow.wyj_spieniacz_m -> cmd_spieniacz_m;
+      wyj_dozownik: port logika_skladnikow.wyj_dozownik_k -> cmd_dozownik_k;
+  end GlownyProcesZaparzania.impl;
+
+  process ProcesObslugiIO    -- Zmieniono z: ProcesIO
+    features
+      czujnik_ilosc_w: in data port Base_Types::Integer;  -- Zmieniono z: sensor_ilosci_wej
+      czujnik_temp_w: in data port Base_Types::Integer;  -- Zmieniono z: sensor_temp_wej
+      
+      dane_sensoryczne: out data port Base_Types::Integer;  -- Zmieniono z: out_sensory
+      nowa_konfiguracja: out data port MieszankaPlynow;     -- Zmieniono z: out_napoj
+  end ProcesObslugiIO;
+  
+  process implementation ProcesObslugiIO.impl
+    subcomponents
+      przekaznik: thread PrzekaznikDanych.impl;
+    connections
+      polacz_temp_przek: port czujnik_temp_w -> przekaznik.wejscie;  -- Zmieniono port
+      polacz_przek_wyj: port przekaznik.wyjscie -> dane_sensoryczne;  -- Zmieniono port
+      
+      polacz_ilosc_przek: port czujnik_ilosc_w -> przekaznik.wejscie;  -- Zmieniono port
+  end ProcesObslugiIO.impl;
+  
+  -- ==== PROCESOR, PAMIEC, MAGISTRALA ====
+  processor KontrolerGlowny 
+    features
+      bus_eth: requires bus access MagistralaDanych;
+    properties
+      SEI::GrossWeight => 0.06 kg;
+      SEI::WeightLimit => 0.12 kg;
+  end KontrolerGlowny;
+  
+  processor implementation KontrolerGlowny.impl
+  end KontrolerGlowny.impl;
+
+  memory PamiecSystemowa 
+    properties
+      SEI::GrossWeight => 0.015 kg;
+      SEI::WeightLimit => 0.025 kg;
+  end PamiecSystemowa;
+
+  bus MagistralaDanych
+    features
+      eth_req: requires bus access MagistralaDanych;
+      glowny_dostep: provides bus access MagistralaDanych;
+    properties
+      SEI::GrossWeight => 0.04 kg;
+      SEI::WeightLimit => 0.06 kg;
+  end MagistralaDanych;
+
+  -- ==== SYSTEMY (SYSTEMS) ====
+  
+  system UkladSterowania    -- Zmieniono z: SystemEkspresuDoKawy
+    properties
+      SEI::WeightLimit => 11.0 kg;
+  end UkladSterowania;
+  
+  system implementation UkladSterowania.impl
+    subcomponents
+      cpu: processor KontrolerGlowny;
+      magistrala_sys: bus MagistralaDanych;
+      pamiec: memory PamiecSystemowa;
+      
+      modul_zaparzania: process GlownyProcesZaparzania.impl;  -- Zmieniono nazwę subkomponentu
+      modul_io: process ProcesObslugiIO.impl;  -- Zmieniono nazwę subkomponentu
+        
+      sensor_temp: device SensorTemperatury;
+      sensor_ilosci: device SensorIlosci;
+      wyswietlacz: device WyswietlaczLCD;
+      
+      pompa_wody: device PompaWody;
+      pompa_mleka: device PompaMleka;
+      dozownik_kawy: device DozownikKawy;
+      mlynek: device MlynekKawy;
+      spieniacz: device SpieniaczMleka;
+      grzalka_wody: device GrzalkaWody;
+      
+      zbiornik_wody: device ZbiornikWody;
+      zbiornik_mleka: device ZbiornikMleka;
+      obudowa: device Obudowa;
+      
+    connections
+      -- Polaczenia urzadzen wykonawczych (Moduł Zaparzania -> Device)
+      woda_cmd_conn: port modul_zaparzania.cmd_pompa_w -> pompa_wody.sygnal_pracy_w;  -- Zmieniono porty
+      mleko_cmd_conn: port modul_zaparzania.cmd_pompa_m -> pompa_mleka.sygnal_pracy_m;  -- Zmieniono porty
+      mlynek_cmd_conn: port modul_zaparzania.cmd_mlynek_k -> mlynek.sygnal_pracy_miel;  -- Zmieniono porty
+      spien_cmd_conn: port modul_zaparzania.cmd_spieniacz_m -> spieniacz.sygnal_pracy_spien;  -- Zmieniono porty
+      grzal_cmd_conn: port modul_zaparzania.cmd_grzalka_w -> grzalka_wody.sygnal_pracy_grz;  -- Zmieniono porty
+      doz_cmd_conn: port modul_zaparzania.cmd_dozownik_k -> dozownik_kawy.sygnal_pracy_k;  -- Zmieniono porty
+      
+      -- Polaczenia urzadzen I/O (Device -> Moduł IO)
+      temp_in_conn: port sensor_temp.odczyt_termiczny -> modul_io.czujnik_temp_w {  -- Zmieniono port
+        Actual_Connection_Binding => (reference(magistrala_sys));
+      };
+      ilosc_in_conn: port sensor_ilosci.wartosc_pomiaru -> modul_io.czujnik_ilosc_w {  -- Zmieniono port
+        Actual_Connection_Binding => (reference(magistrala_sys));
+      };
+      wysw_in_conn: port wyswietlacz.napoj_gotowy -> modul_zaparzania.ustawienia_in {  -- Zmieniono port
+        Actual_Connection_Binding => (reference(magistrala_sys));
+      };
+      
+      -- Polaczenie danych z IO do Zaparzania
+      data_flow_conn: port modul_io.dane_sensoryczne -> modul_zaparzania.dane_pomiarowe_in {  -- Zmieniono porty
+        Actual_Connection_Binding => (reference(magistrala_sys));
+      };
+
+      -- Mapowanie procesora do magistrali
+      cpu_magistrala: bus access cpu.bus_eth -> magistrala_sys;
+      
+    properties
+      Actual_Processor_Binding => (reference(cpu)) applies to modul_zaparzania;
+      Actual_Processor_Binding => (reference(cpu)) applies to modul_io;
+      Actual_Memory_Binding => (reference(pamiec)) applies to modul_zaparzania;
+      Actual_Memory_Binding => (reference(pamiec)) applies to modul_io;
+  end UkladSterowania.impl;
+
+end ekspres_kompakt_analiza_wagi;
