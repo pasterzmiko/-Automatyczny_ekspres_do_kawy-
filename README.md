@@ -97,7 +97,7 @@ Po wybraniu napoju na Wyświetlaczu LCD (interfejs użytkownika), system sterowa
 
 
 
-# 6. Proponowane metody analizy modelu, dostępne w Osate. Wyniki przeprowadzonych analiz. 
+# 6. Proponowane metody analizy modelu, dostępne w Osate. Wyniki przeprowadzonych analiz
 
 Poniżej przedstawiono wyniki analiz przeprowadzonych przy użyciu wtyczek analitycznych środowiska **OSATE** na podstawie zdefiniowanych właściwości zasobów.
 
@@ -131,5 +131,18 @@ Analiza weryfikuje bilans energetyczny (podaż vs. popyt) oraz wytrzymałość m
 | **Moc dostarczana do magistrali** | $\text{1500.0 W}$ | Moc wejściowa z zasilacza. |
 | **Wniosek Obciążenia** | **Przekroczenie Limitu (Alarm)** | Moc dostarczana ($\text{1500.0 W}$) **przekracza** pojemność magistrali ($\text{1400.0 W}$). Wymagana jest wymiana magistrali na taką, która wytrzyma co najmniej $\text{1500 W}$. |
 
-# 7. Inne informacje zależne od tematu.
+# 7. Inne informacje zależne od tematu
+
+Projekt kładzie szczególny nacisk na **walidację architektury** pod kątem zasobów fizycznych, co jest kluczowe dla optymalizacji kosztów produkcji i bezpieczeństwa użytkowania.
+
+* **Optymalizacja zasobów (Waga i Moc):** Integracja analiz **`SEI::GrossWeight`** (waga) i **`SEI::PowerBudget`** (pobór mocy) umożliwia wczesne wykrywanie wąskich gardeł. Jest to niezbędne, aby zapewnić, że całkowita waga urządzenia jest akceptowalna, a system zasilania jest bezpieczny i wystarczający (np. uniknięcie przeciążenia **Magistrali Energetycznej**).
+* **Wielkość Poboru Mocy:** Krytycznym elementem jest **Grzałka Wody** (`GrzalkaWody`), która stanowi zdecydowaną większość ($\text{1000 W}$) całkowitego zapotrzebowania na moc. Analiza musi uwzględniać ten wysoki, krótkotrwały pobór przy doborze **Zasilania Głównego** i **Magistrali Energetycznej**.
+* **Separacja Logiki:** Wyodrębnienie **Procesu Obsługi I/O** (`ProcesObslugiIO`) od **Głównego Procesu Zaparzania** (`GlownyProcesZaparzania`) zapewnia modularną budowę, ułatwiając separację zadań:
+    * **I/O:** zbieranie i wstępna obróbka danych z sensorów i interfejsu.
+    * **Sterowanie:** podejmowanie decyzji i wydawanie komend do aktuatorów.
+    * Taka modularność ułatwia **skalowalność** oraz modyfikację algorytmów sterujących bez wpływu na warstwę sprzętową.
 # 8. Literatura
+[1] OSATE 2 - Open Source AADL Tool Environment - https://osate.org/
+[2] AADL Community Resources and Examples - https://github.com/osate
+[3] SAE International, "AS5506C: Architecture Analysis & Design Language (AADL)," SAE International Standard, 2017 - https://www.sae.org/standards/content/as5506c/
+
