@@ -142,7 +142,7 @@ Projekt kładzie szczególny nacisk na **walidację architektury** pod kątem za
     * **Sterowanie:** podejmowanie decyzji i wydawanie komend do aktuatorów.
     * Taka modularność ułatwia **skalowalność** oraz modyfikację algorytmów sterujących bez wpływu na warstwę sprzętową.
 # 8. Literatura
-[1] OSATE 2 - Open Source AADL Tool Environment - https://osate.org/
-[2] AADL Community Resources and Examples - https://github.com/osate
-[3] SAE International, "AS5506C: Architecture Analysis & Design Language (AADL)," SAE International Standard, 2017 - https://www.sae.org/standards/content/as5506c/
+- [1] OSATE 2 - Open Source AADL Tool Environment - https://osate.org/
+- [2] AADL Community Resources and Examples - https://github.com/osate
+- [3] SAE International, "AS5506C: Architecture Analysis & Design Language (AADL)," SAE International Standard, 2017 - https://www.sae.org/standards/content/as5506c/
 
