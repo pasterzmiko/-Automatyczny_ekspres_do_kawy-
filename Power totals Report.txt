@@ -1,0 +1,7 @@
+Power totals Report
+
+MagistralaEnergetyczna (magistrala_power):
+[A] Power budget total (1092.0 W) is within capacity of 1400.0 W (22.0 % Power slack)
+
+ZasilanieGlowne (power_supply):
+[A] Power budget total (1092.0 W) is within supply limit of 1500.0 W (27.2 % Power slack)
