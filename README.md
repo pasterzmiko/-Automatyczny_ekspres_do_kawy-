@@ -6,13 +6,130 @@
 
 # 3. Opis modelowanego systemu 
 ## 1. Opis ogólny
-## 2. Opis dla użytkownika
+Projekt przedstawia model architektury systemu wbudowanego automatycznego ekspresu do kawy, skupiający się na krytycznych zasobach fizycznych i logice sterowania procesem zaparzania. Model został stworzony w języku AADL (Architecture Analysis and Design Language) w celu umożliwienia walidacji architektury pod kątem obciążeń jeszcze przed etapem implementacji.
 
+System opiera się na:
+
+- Centralnym Kontrolerze (Processor), na którym działają procesy decyzyjne (GlownyProcesZaparzania).
+- Aktuatorach (Pompy, Grzałka, Młynek), które są największymi konsumentami energii.
+- Magistrali Energetycznej zdefiniowanej jako system transmisji mocy.
+- Analizach obciążeniowych, które uwzględniają budżet wagowy (SEI::WeightLimit) oraz budżet energetyczny (SEI::PowerBudget, SEI::PowerSupply), co pozwala na weryfikację, czy dostarczana moc (1500 W) i pojemność magistrali (1400 W) są wystarczające dla wszystkich podzespołów.
+    
+## 2. Opis dla użytkownika
+Urządzenie jest w pełni automatycznym ekspresem do kawy, który wykonuje szereg skomplikowanych sekwencji w odpowiedzi na wybór użytkownika.
+
+Po wybraniu napoju na Wyświetlaczu LCD (interfejs użytkownika), system sterowania automatycznie uruchamia i koordynuje następujące zadania:
+
+- Przygotowanie surowców: Na podstawie wybranego napoju, system aktywuje Młynek Kawy do zmielenia ziaren i używa Sensora Ilości do dozowania odpowiedniej porcji.
+- Kontrola termiczna: Grzałka Wody podnosi temperaturę, a Sensor Temperatury monitoruje, czy osiągnięto optymalny poziom dla ekstrakcji kawy.
+- Dozowanie płynów: Pompa Wody i Pompa Mleka dozują płyny w określonych proporcjach do stworzenia wybranego napoju (np. Espresso, Latte).
+- Obróbka mleka: Jeśli to konieczne, Spieniacz Mleka jest aktywowany.
+- Sterowanie i komunikacja: Cała logika sterowania jest realizowana przez procesy uruchomione na Kontrolerze Głównym, które komunikują się ze wszystkimi urządzeniami fizycznymi poprzez Magistralę Danych.
+  
 # 4. Spis komponentów AADL
+
+## Pakiet (Package)
+
+| Nazwa Pakietu | Opis |
+| :--- | :--- |
+| `ekspres_kompakt_analiza_wagi` | Główny pakiet architektoniczny ekspresu do kawy. |
+
+## Systemy Główne (Main Systems)
+
+| Nazwa Systemu | Opis |
+| :--- | :--- |
+| `UkladSterowania` | System najwyższego poziomu. Agreguje wszystkie podzespoły fizyczne i logiczne; definiuje globalny budżet wagowy. |
+
+## Procesory (Processors)
+
+| Nazwa Procesora | Opis |
+| :--- | :--- |
+| `KontrolerGlowny` | Główna jednostka obliczeniowa (CPU), na której wykonywana jest cała logika sterowania (Procesy). |
+
+## Magistrale i Zasilanie (Buses & Power)
+
+| Nazwa | Opis |
+| :--- | :--- |
+| `MagistralaDanych` | Magistrala komunikacyjna, łącząca procesor i sensory. |
+| `MagistralaEnergetyczna` | System transmisji energii elektrycznej. Waliduje, czy jej pojemność (`SEI::PowerCapacity`) wystarcza do przesłania mocy z zasilacza do konsumentów. |
+
+## Pamięć (Memory)
+
+| Nazwa Pamięci | Opis |
+| :--- | :--- |
+| `PamiecSystemowa` | Pamięć wykorzystywana przez procesor do obsługi procesów. |
+
+## Urządzenia (Devices)
+
+| Nazwa Urządzenia | Opis |
+| :--- | :--- |
+| `SensorIlosci` | Sensor mierzący ilość dozowanych surowców. |
+| `SensorTemperatury` | Sensor mierzący temperaturę. |
+| `PompaWody` | Aktuator do przemieszczania wody. |
+| `PompaMleka` | Aktuator do przemieszczania mleka. |
+| `DozownikKawy` | Aktuator do dozowania kawy. |
+| `MlynekKawy` | Aktuator do mielenia ziaren. |
+| `SpieniaczMleka` | Aktuator do spieniania. |
+| `GrzalkaWody` | Aktuator do podgrzewania wody (duży pobór mocy). |
+| `WyswietlaczLCD` | Interfejs użytkownika. |
+| `ZasilanieGlowne` | Urządzenie dostarczające moc elektryczną (`PowerSupplier`) do systemu. |
+| `Obudowa` | Komponent pasywny, definiujący wagę obudowy. |
+
+## Wątki (Threads)
+
+| Nazwa Wątku | Opis |
+| :--- | :--- |
+| `LogikaSkladnikow` | Główny wątek decyzyjny sterowania aktuatorami. |
+| `PrzekaznikDanych` | Wątek pomocniczy do agregacji lub przekazywania danych sensorów. |
+
+## Procesy (Processes)
+
+| Nazwa Procesu | Rola |
+| :--- | :--- |
+| `GlownyProcesZaparzania` | Proces wykonujący główną logikę sterowania i wysyłający komendy do aktuatorów. |
+| `ProcesObslugiIO` | Proces odpowiedzialny za zbieranie i wstępną obróbkę danych z sensorów i interfejsu. |
+
 # 5. Model - rysunek
 
-<img width="1307" height="521" alt="obraz" src="https://github.com/user-attachments/assets/532920b4-693c-4fb4-a73b-7b6bf4d582f5" />
+<img width="1696" height="687" alt="obraz" src="https://github.com/user-attachments/assets/81de39c3-9be4-4f21-a86e-f80d86818117" />
+
+
+
+
 
 # 6. Proponowane metody analizy modelu, dostępne w Osate. Wyniki przeprowadzonych analiz. 
+
+Poniżej przedstawiono wyniki analiz przeprowadzonych przy użyciu wtyczek analitycznych środowiska **OSATE** na podstawie zdefiniowanych właściwości zasobów.
+
+## A. Analiza Wagowa (Weight / Mass Analysis) 
+
+Analiza ta weryfikuje, czy fizyczna masa wszystkich komponentów systemu nie przekracza założonego limitu projektowego.
+
+| Parametr | Wartość | Uwagi |
+| :--- | :--- | :--- |
+| **Założony limit** (`UkladSterowania::WeightLimit`) | $\text{11.0 kg}$ | Całkowity budżet wagowy dla urządzenia. |
+| **Całkowita masa systemu** (Suma `GrossWeight`) | $\text{10.675 kg}$ | Suma wag wszystkich subkomponentów fizycznych. |
+| **Wniosek** | **Wymagania Spełnione** | Urządzenie spełnia wymagania wagowe z zapasem  $\text{0.325 kg}$. |
+
+## B. Analiza Energetyczna (Electrical Power Analysis) 
+
+Analiza weryfikuje bilans energetyczny (podaż vs. popyt) oraz wytrzymałość magistrali w trybie pełnego obciążenia.
+
+### B1. Bilans Popytu i Podaży
+
+| Parametr | Wartość | Uwagi |
+| :--- | :--- | :--- |
+| **Maksymalna moc dostarczana** (`ZasilanieGlowne::PowerSupply`) | $\text{1500.0 W}$ | Maksymalna moc, jaką może zapewnić zasilacz. |
+| **Sumaryczny pobór mocy** (Suma `PowerBudget`) | $\text{1092.0 W}$ | Całkowite, jednoczesne zapotrzebowanie wszystkich konsumentów. |
+| **Wniosek Popytu** | **Wymagania Spełnione** | Podaż ($\text{1500 W}$) przewyższa pobór ($\text{1092.0 W}$). |
+
+### B2. Obciążenie Magistrali
+
+| Parametr | Wartość | Uwagi |
+| :--- | :--- | :--- |
+| **Maksymalna pojemność magistrali** (`MagistralaEnergetyczna::PowerCapacity`) | $\text{1400.0 W}$ | Maksymalna moc, jaką może bezpiecznie obsłużyć okablowanie. |
+| **Moc dostarczana do magistrali** | $\text{1500.0 W}$ | Moc wejściowa z zasilacza. |
+| **Wniosek Obciążenia** | **Przekroczenie Limitu (Alarm)** | Moc dostarczana ($\text{1500.0 W}$) **przekracza** pojemność magistrali ($\text{1400.0 W}$). Wymagana jest wymiana magistrali na taką, która wytrzyma co najmniej $\text{1500 W}$. |
+
 # 7. Inne informacje zależne od tematu.
 # 8. Literatura
