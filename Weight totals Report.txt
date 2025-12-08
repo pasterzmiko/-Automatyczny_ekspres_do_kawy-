@@ -1,0 +1,20 @@
+Weight totals Report
+
+Obudowa: [L] Sum of weights (2.700 kg) — no weight limit specified
+GrzalkaWody: [A] Sum of weights (2.600 kg) is below weight limit of 3.200 kg (18.8 % Weight slack)
+UkladSterowania_impl: [A] Sum of weights (10.675 kg) is below weight limit of 11.000 kg (3.0 % Weight slack)
+MlynekKawy: [A] Sum of weights (1.500 kg) is below weight limit of 2.100 kg (28.6 % Weight slack)
+PompaWody: [A] Sum of weights (0.900 kg) is below weight limit of 1.200 kg (25.0 % Weight slack)
+ZasilanieGlowne: [A] Sum of weights (0.700 kg) is below weight limit of 1.000 kg (30.0 % Weight slack)
+PompaMleka: [A] Sum of weights (0.600 kg) is below weight limit of 0.800 kg (25.0 % Weight slack)
+ZbiornikWody: [A] Sum of weights (0.400 kg) is below weight limit of 2.500 kg (84.0 % Weight slack)
+SpieniaczMleka: [A] Sum of weights (0.350 kg) is below weight limit of 0.600 kg (41.7 % Weight slack)
+ZbiornikMleka: [A] Sum of weights (0.300 kg) is below weight limit of 1.200 kg (75.0 % Weight slack)
+DozownikKawy: [A] Sum of weights (0.250 kg) is below weight limit of 0.400 kg (37.5 % Weight slack)
+WyswietlaczLCD: [A] Sum of weights (0.120 kg) is below weight limit of 0.180 kg (33.3 % Weight slack)
+MagistralaEnergetyczna: [A] Sum of weights (0.080 kg) is below weight limit of 0.150 kg (46.7 % Weight slack)
+KontrolerGlowny: [A] Sum of weights (0.060 kg) is below weight limit of 0.120 kg (50.0 % Weight slack)
+SensorIlosci: [A] Sum of weights (0.040 kg) is below weight limit of 0.060 kg (33.3 % Weight slack)
+SensorTemperatury: [A] Sum of weights (0.040 kg) is below weight limit of 0.060 kg (33.3 % Weight slack)
+PamiecSystemowa: [A] Sum of weights (0.020 kg) is below weight limit of 0.040 kg (50.0 % Weight slack)
+MagistralaDanych: [A] Sum of weights (0.015 kg) is below weight limit of 0.025 kg (40.0 % Weight slack)
