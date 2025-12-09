@@ -103,9 +103,7 @@ Po wybraniu napoju na Wyświetlaczu LCD (interfejs użytkownika), system sterowa
 
 # 5. Model - rysunek
 
-<img width="1696" height="687" alt="obraz" src="https://github.com/user-attachments/assets/81de39c3-9be4-4f21-a86e-f80d86818117" />
-
-
+<img width="1580" height="568" alt="obraz" src="https://github.com/user-attachments/assets/e6199011-1714-4fb1-8897-05d9c02ab897" />
 
 
 
