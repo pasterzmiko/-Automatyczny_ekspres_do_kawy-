@@ -58,7 +58,7 @@ Po wybraniu napoju na Wyświetlaczu LCD (interfejs użytkownika), system sterowa
 | :--- | :--- |
 | `KontrolerGlowny` | Główna jednostka obliczeniowa (CPU), na której wykonywana jest cała logika sterowania (Procesy). |
 
-## Magistrale i Zasilanie (Buses & Power)
+## Magistrale (Buses)
 
 | Nazwa | Opis |
 | :--- | :--- |
