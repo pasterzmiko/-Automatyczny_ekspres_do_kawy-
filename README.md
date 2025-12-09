@@ -63,7 +63,7 @@ Po wybraniu napoju na Wyświetlaczu LCD (interfejs użytkownika), system sterowa
 | Nazwa | Opis |
 | :--- | :--- |
 | `MagistralaDanych` | Magistrala komunikacyjna, łącząca procesor i sensory. |
-| `MagistralaEnergetyczna` | System transmisji energii elektrycznej. Waliduje, czy jej pojemność (`SEI::PowerCapacity`) wystarcza do przesłania mocy z zasilacza do konsumentów. |
+
 
 ## Pamięć (Memory)
 
