@@ -28,6 +28,18 @@ Po wybraniu napoju na Wyświetlaczu LCD (interfejs użytkownika), system sterowa
   
 # 4. Spis komponentów AADL
 
+# Dane Systemu (System Data)
+
+## Definicje Typów Danych (Data Type Definitions)
+
+| Typ Danych | Opis | Wewnętrzna Reprezentacja (Data_Model::Data_Representation) |
+| :--- | :--- | :--- |
+| `KonfiguracjaNapoju` | Typ dla wyboru kawy przez użytkownika. | `Enum` (Wyliczenie) |
+| `MieszankaPlynow` | Typ danych dla parametrów przygotowania napoju. | `Struct` (Struktura) |
+| `LicznikSurowca` | Typ dla odczytów sensorów (ilość/temperatura). | `Integer` (Liczba Całkowita) |
+
+---
+
 ## Pakiet (Package)
 
 | Nazwa Pakietu | Opis |
